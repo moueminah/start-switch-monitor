@@ -1,0 +1,30 @@
+name: Build APK
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract ZIP
+        run: |
+          ZIP=$(ls *.zip | head -n 1)
+          echo "Extracting $ZIP"
+          unzip "$ZIP"
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build APK
+        run: ./start_switch_monitor_apk/gradlew -p start_switch_monitor_apk assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: start_switch_monitor_apk/app/build/outputs/apk/release/app-release.apk
