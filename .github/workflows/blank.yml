@@ -5,6 +5,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -20,8 +21,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Install Gradle
+        run: sudo apt-get update && sudo apt-get install -y gradle
+
       - name: Build APK
-        run: ./start_switch_monitor_apk/gradlew -p start_switch_monitor_apk assembleRelease
+        run: |
+          cd start_switch_monitor_apk
+          gradle assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
